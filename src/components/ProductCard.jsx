@@ -4,30 +4,29 @@ import { ShoppingCart, Star, Package, MapPin } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import toast from 'react-hot-toast';
 
-// Reliable fallback images per category
-const FALLBACK_IMAGES = {
-  'dry-fruits': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Dried_Apricots.jpg/600px-Dried_Apricots.jpg',
-  'shilajit': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Almonds_kernel.jpg/600px-Almonds_kernel.jpg',
-  'nuts': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Walnuts_-_whole_and_shelled.jpg/600px-Walnuts_-_whole_and_shelled.jpg',
-  'seeds': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Flax_seeds.jpg/600px-Flax_seeds.jpg',
-  'herbs': 'https://images.unsplash.com/photo-1515586000433-45406d8e6662?w=600&q=80',
-  'other': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Prunus_armeniaca_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-111.jpg/600px-Prunus_armeniaca_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-111.jpg',
+// Category-based colored placeholder (always works, no network needed)
+const CATEGORY_COLORS = {
+  'dry-fruits': '#92400e',
+  'shilajit': '#1c1917',
+  'nuts': '#78350f',
+  'seeds': '#166534',
+  'herbs': '#14532d',
+  'other': '#7c2d12',
 };
 
-const DEFAULT_IMG = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Walnuts_-_whole_and_shelled.jpg/600px-Walnuts_-_whole_and_shelled.jpg';
-
-export function getProductImage(product) {
-  if (product?.imageUrl && product.imageUrl.startsWith('http')) return product.imageUrl;
-  return FALLBACK_IMAGES[product?.category] || DEFAULT_IMG;
-}
+const CATEGORY_EMOJI = {
+  'dry-fruits': '🍑',
+  'shilajit': '🪨',
+  'nuts': '🥜',
+  'seeds': '🌱',
+  'herbs': '🌿',
+  'other': '🧴',
+};
 
 export default function ProductCard({ product, delay = 0 }) {
   const { dispatch } = useCart();
   const [imgError, setImgError] = useState(false);
-  const [imgLoaded, setImgLoaded] = useState(false);
   const [adding, setAdding] = useState(false);
-
-  const imgSrc = imgError ? (FALLBACK_IMAGES[product.category] || DEFAULT_IMG) : getProductImage(product);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -41,6 +40,10 @@ export default function ProductCard({ product, delay = 0 }) {
     setTimeout(() => setAdding(false), 500);
   };
 
+  const bgColor = CATEGORY_COLORS[product.category] || '#292524';
+  const emoji = CATEGORY_EMOJI[product.category] || '📦';
+  const hasImage = product.imageUrl && product.imageUrl.startsWith('http') && !imgError;
+
   return (
     <Link
       to={`/products/${product._id}`}
@@ -49,18 +52,27 @@ export default function ProductCard({ product, delay = 0 }) {
     >
       <div className="glass rounded-2xl overflow-hidden h-full flex flex-col">
         {/* Image */}
-        <div className="relative overflow-hidden aspect-square bg-stone-800">
-          {!imgLoaded && (
-            <div className="absolute inset-0 shimmer-bg" />
+        <div className="relative overflow-hidden aspect-square" style={{ backgroundColor: bgColor }}>
+          
+          {/* Fallback placeholder — always visible if image fails */}
+          {(!hasImage) && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span style={{ fontSize: '64px', lineHeight: 1 }}>{emoji}</span>
+              <span className="text-white/60 text-xs mt-2 capitalize">{product.category.replace('-', ' ')}</span>
+            </div>
           )}
-          <img
-            src={imgSrc}
-            alt={product.name}
-            onError={() => setImgError(true)}
-            onLoad={() => setImgLoaded(true)}
-            className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
-            loading="lazy"
-          />
+
+          {/* Real image — load on top of placeholder */}
+          {product.imageUrl && (
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              onError={() => setImgError(true)}
+              className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${imgError ? 'opacity-0' : 'opacity-100'}`}
+              loading="lazy"
+            />
+          )}
+
           {/* Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           
