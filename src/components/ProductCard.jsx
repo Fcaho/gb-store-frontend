@@ -6,15 +6,15 @@ import toast from 'react-hot-toast';
 
 // Reliable fallback images per category
 const FALLBACK_IMAGES = {
-  'dry-fruits': 'https://images.unsplash.com/photo-1595475884562-073b63869d79?w=600&q=80',
-  'shilajit': 'https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=600&q=80',
-  'nuts': 'https://images.unsplash.com/photo-1563412886-8b7f6b98ef80?w=600&q=80',
-  'seeds': 'https://images.unsplash.com/photo-1574570192994-f7a46cebb3d2?w=600&q=80',
+  'dry-fruits': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Dried_Apricots.jpg/600px-Dried_Apricots.jpg',
+  'shilajit': 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Almonds_kernel.jpg/600px-Almonds_kernel.jpg',
+  'nuts': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Walnuts_-_whole_and_shelled.jpg/600px-Walnuts_-_whole_and_shelled.jpg',
+  'seeds': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Flax_seeds.jpg/600px-Flax_seeds.jpg',
   'herbs': 'https://images.unsplash.com/photo-1515586000433-45406d8e6662?w=600&q=80',
-  'other': 'https://images.unsplash.com/photo-1596042749173-68c0e3e05e2c?w=600&q=80',
+  'other': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Prunus_armeniaca_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-111.jpg/600px-Prunus_armeniaca_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-111.jpg',
 };
 
-const DEFAULT_IMG = 'https://images.unsplash.com/photo-1563412886-8b7f6b98ef80?w=600&q=80';
+const DEFAULT_IMG = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Walnuts_-_whole_and_shelled.jpg/600px-Walnuts_-_whole_and_shelled.jpg';
 
 export function getProductImage(product) {
   if (product?.imageUrl && product.imageUrl.startsWith('http')) return product.imageUrl;
